@@ -1,4 +1,5 @@
-name: build python application
+---
+name: build application with variables
 on:
     workflow_dispatch:
     push:
@@ -7,21 +8,41 @@ on:
     pull_request:
         branches:
             - master
+env:
+    PYTHON_VERSION: '3.9'
 jobs:
     jobs1:
         runs-on: ubuntu-latest
         steps:
             - name: checkout code
               uses: actions/checkout@v6
-            - name: install python on runner
+            - name: setup python ${{ env.PYTHON_VERSION }} on runner
               uses: actions/setup-python@v6
               with:
-                python-version: '3.11'
-            - name: install dependencies
-              run: | 
-                pip install --upgrade pip
-                pip install -r requirements.txt
-            - name: set python path
-              run: echo PYTHONPATH=$GITHUB_WORKSPACE >> $GITHUB_ENV
-            - name: run tests
-              run: pytest 'tests' --cov=app --cov-report=xml
+                python-version: ${{ env.PYTHON_VERSION }}
+    jobs2:
+        runs-on: ubuntu-latest
+        env:
+            job_python_version: '3.10'
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v6
+            - name: setup python ${{ env.job_python_version }} on runner
+              uses: actions/setup-python@v6
+              with:
+                python-version: ${{ env.job_python_version }}
+    jobs3:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v6
+            - name: setup python on runner
+              env:
+                mystep_PYTHON_VERSION: '3.11'
+              uses: actions/setup-python@v6
+              with:
+                python-version: ${{ env.mystep_PYTHON_VERSION }}
+            - name: print a message
+              env:
+                APPLICATION: PYTHON
+              run: echo "THE APPLICATION INSTALLED IS $APPLICATION"
