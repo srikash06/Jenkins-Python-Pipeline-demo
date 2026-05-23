@@ -22,5 +22,5 @@ jobs:
           run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
         - name: run test
           env:
-            mycmnd: ${{ env.MYCMD }}
+            mycmnd: ${{ vars.MYCMD }}
           run: $mycmnd
